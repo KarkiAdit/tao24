@@ -11,9 +11,9 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        // Background color for the root. "Magic" dynamic color.
+        view.backgroundColor = .systemGroupedBackground
     }
-
 
 }
 
