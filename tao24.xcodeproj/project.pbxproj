@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		BAEDCFEC2F86DB630075E471 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = BAEDCFEB2F86DB630075E471 /* CLAUDE.md */; };
+		BAEDCFEE2F86DD6C0075E471 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = BAEDCFED2F86DD6C0075E471 /* .gitignore */; };
+		BAEDD0742F86FC490075E471 /* Habit+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAEDD0722F86FC490075E471 /* Habit+CoreDataClass.swift */; };
+		BAEDD0752F86FC490075E471 /* Habit+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAEDD0732F86FC490075E471 /* Habit+CoreDataProperties.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		BAEDCFCD2F86BDE60075E471 /* tao24.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = tao24.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BAEDCFEB2F86DB630075E471 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = CLAUDE.md; sourceTree = "<group>"; };
+		BAEDCFED2F86DD6C0075E471 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		BAEDD0722F86FC490075E471 /* Habit+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Habit+CoreDataClass.swift"; path = "tao24/Models/Habit+CoreDataClass.swift"; sourceTree = "<group>"; };
+		BAEDD0732F86FC490075E471 /* Habit+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "Habit+CoreDataProperties.swift"; path = "tao24/Models/Habit+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,6 +56,10 @@
 		BAEDCFC42F86BDE60075E471 = {
 			isa = PBXGroup;
 			children = (
+				BAEDD0722F86FC490075E471 /* Habit+CoreDataClass.swift */,
+				BAEDD0732F86FC490075E471 /* Habit+CoreDataProperties.swift */,
+				BAEDCFED2F86DD6C0075E471 /* .gitignore */,
+				BAEDCFEB2F86DB630075E471 /* CLAUDE.md */,
 				BAEDCFCF2F86BDE60075E471 /* tao24 */,
 				BAEDCFCE2F86BDE60075E471 /* Products */,
 			);
@@ -122,6 +137,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAEDCFEE2F86DD6C0075E471 /* .gitignore in Resources */,
+				BAEDCFEC2F86DB630075E471 /* CLAUDE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +149,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAEDD0742F86FC490075E471 /* Habit+CoreDataClass.swift in Sources */,
+				BAEDD0752F86FC490075E471 /* Habit+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

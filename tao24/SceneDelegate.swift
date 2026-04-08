@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Create the window container for the entire UI
         let window = UIWindow(windowScene: windowScene)
         // Create the first screen (content)
-        let rootVC = ViewController()
+        let rootVC = HomeViewController()
         // Wrap the content in a navigation controller
         let navVC = UINavigationController(rootViewController: rootVC)
         // Assign the navigation stack as the entry point for the window

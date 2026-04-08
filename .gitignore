@@ -1,0 +1,23 @@
+# Xcode / macOS
+build/
+DerivedData/
+*.xcworkspace
+xcuserdata/
+.DS_Store
+
+# Cursor / VS Code
+.vscode/
+.cursor/
+
+# Sensitive Keys (CRITICAL)
+.env
+keys.json
+secrets.swift
+
+# Dependency Managers
+Pods/
+.build/ (Swift Package Manager)
+
+# Personal / OS
+*.swp
+*.lock
