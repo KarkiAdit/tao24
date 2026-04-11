@@ -30,10 +30,10 @@ class Card: UIView {
         layer.borderWidth = 0.5
         layer.borderColor = UIColor.separator.cgColor
         
-        // Standard elevation
+        // Refined elevation for better depth perception
         layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.05
-        layer.shadowOffset = CGSize(width: 0, height: 2)
-        layer.shadowRadius = 8
+        layer.shadowOpacity = 0.08
+        layer.shadowOffset = CGSize(width: 0, height: 1)
+        layer.shadowRadius = 6
     }
 }

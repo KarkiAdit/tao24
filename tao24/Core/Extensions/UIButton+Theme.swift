@@ -32,7 +32,7 @@ extension UIButton {
             
         case .secondary:
             backgroundColor = .clear
-            layer.borderWidth = 1.5
+            layer.borderWidth = 1.2
             layer.borderColor = UIColor.accent.cgColor
             setTitleColor(.accent, for: .normal)
             
@@ -40,6 +40,7 @@ extension UIButton {
             backgroundColor = .clear
             layer.borderWidth = 0
             setTitleColor(.secondaryText, for: .normal)
+            titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         }
     }
 
