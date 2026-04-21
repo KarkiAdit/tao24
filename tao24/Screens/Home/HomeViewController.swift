@@ -9,142 +9,176 @@ import UIKit
 
 class HomeViewController: UIViewController {
 
-    // MARK: - Persistence
-    private let store = HabitStore()
-    
-    // MARK: - UI Components
-    
-    private let emptyStateView: EmptyStateView = {
-        let view = EmptyStateView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
+    // MARK: - Layout Constants
+
+    private enum Layout {
+        static let horizontalPadding: CGFloat = 20
+        static let verticalPadding: CGFloat = 20
+        static let sectionSpacing: CGFloat = 28
+        static let cardSpacing: CGFloat = 12
+        static let buttonHeight: CGFloat = 50
+    }
+
+    // MARK: - Data
+
+    private var habits: [Habit] = []
+
+    // MARK: - UI Elements
+
+    private let scrollView: UIScrollView = {
+        let sv = UIScrollView()
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.showsVerticalScrollIndicator = false
+        return sv
     }()
 
-    private let helloLabel: UILabel = {
+    private let contentStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = Layout.cardSpacing
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
+    private let emptyLabel: UILabel = {
         let label = UILabel()
-        label.text = "Hello World"
-        label.textColor = .label
+        label.text = "No habits yet.\nTap the button below to add your first one."
+        label.font = .secondary()
+        label.textColor = .secondaryText
         label.textAlignment = .center
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
 
-    /* TEMPORARY UI: The following button is for testing the HabitStore logic.
-     DELETE this block once the CollectionView and Adapter are implemented.
-    */
-    private let testStoreButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("Test Habit Save/Load", for: .normal)
-        button.backgroundColor = .systemIndigo
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 10
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
+    private let addButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.applyStyle(.primary, title: "Add New Habit")
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        return btn
     }()
 
     // MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        reloadList()
     }
 
-    // MARK: - Setup
+    // MARK: - UI Setup
+
     private func setupUI() {
-        view.backgroundColor = .systemBackground
-        
-        view.addSubview(emptyStateView)
-        emptyStateView.addSubview(helloLabel)
-        
-        // TEMPORARY: Adding test button to view
-        view.addSubview(testStoreButton)
-        testStoreButton.addTarget(self, action: #selector(runHabitStoreTest), for: .touchUpInside)
-        
+        view.backgroundColor = .baseBackground
+
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentStack)
+
         NSLayoutConstraint.activate([
-            // Standard UI Positioning
-            emptyStateView.topAnchor.constraint(equalTo: view.topAnchor),
-            emptyStateView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            emptyStateView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            emptyStateView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
-            helloLabel.centerXAnchor.constraint(equalTo: emptyStateView.centerXAnchor),
-            helloLabel.centerYAnchor.constraint(equalTo: emptyStateView.centerYAnchor),
-            
-            // TEMPORARY: Positioning test button at the bottom
-            testStoreButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            testStoreButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
-            testStoreButton.widthAnchor.constraint(equalToConstant: 220),
-            testStoreButton.heightAnchor.constraint(equalToConstant: 44)
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            contentStack.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: Layout.verticalPadding),
+            contentStack.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: Layout.horizontalPadding),
+            contentStack.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -Layout.horizontalPadding),
+            contentStack.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -Layout.verticalPadding),
+            contentStack.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -Layout.horizontalPadding * 2)
         ])
-    }
-    
-    // MARK: - Temporary Testing Logic
 
-    /*
-     TODO: Delete runHabitStoreTest() once the UI data flow is finalized.
-     This confirms the Habit struct -> JSON -> Disk -> Habit struct cycle works.
-    */
-    @objc private func runHabitStoreTest() {
-        print("\n--- Starting HabitStore Test: Seeding 3 Habits ---")
-        
-        let habitsToSeed: [Habit] = [
-            Habit(
-                id: UUID(),
-                title: "Morning Run",
-                scheduledType: .daily,
-                customDaysBitmask: 127, // All 7 days (1+2+4+8+16+32+64)
-                reminderEnabled: true,
-                reminderTime: Date(),
-                createdAt: Date(),
-                isArchived: false
-            ),
-            Habit(
-                id: UUID(),
-                title: "Swift Coding",
-                scheduledType: .weekdays,
-                customDaysBitmask: 62, // Mon-Fri (2+4+8+16+32)
-                reminderEnabled: true,
-                reminderTime: nil,
-                createdAt: Date(),
-                isArchived: false
-            ),
-            Habit(
-                id: UUID(),
-                title: "Yoga",
-                scheduledType: .custom,
-                customDaysBitmask: 65, // Sun (1) and Sat (64)
-                reminderEnabled: false,
-                reminderTime: nil,
-                createdAt: Date(),
-                isArchived: false
-            )
-        ]
-        
-        // 1. Save the collection to disk
-        store.save(habitsToSeed)
-        
-        // 2. Load all habits back from the Documents Directory
-        let storedHabits = store.load()
-        
-        // 3. Print verification to console
-        if storedHabits.isEmpty {
-            print("Result: No habits found on disk.")
-        } else {
-            print("Result: Successfully retrieved \(storedHabits.count) habits.")
-            
-            storedHabits.forEach { habit in
-                let status = habit.isArchived ? "Archived" : "Active"
-                print("""
-                ------------------------------------------
-                Habit:  \(habit.title) (\(status))
-                ID:     \(habit.id.uuidString.prefix(8))
-                Type:   \(habit.scheduledType.rawValue)
-                Indices: \(habit.activeDays)
-                Bitmask: \(habit.customDaysBitmask ?? 0)
-                ------------------------------------------
-                """)
-            }
-            print("--- End of HabitStore Test ---")
+        // Header
+        let headerLabel = UILabel()
+        headerLabel.text = "Your Habits"
+        headerLabel.font = .display()
+        headerLabel.textColor = .primaryText
+        contentStack.addArrangedSubview(headerLabel)
+        contentStack.setCustomSpacing(Layout.sectionSpacing, after: headerLabel)
+
+        // Add button at the bottom (always visible)
+        addButton.heightAnchor.constraint(equalToConstant: Layout.buttonHeight).isActive = true
+        addButton.addTarget(self, action: #selector(addHabitTapped), for: .touchUpInside)
+    }
+
+    // MARK: - List Rendering
+
+    private func reloadList() {
+        // Remove everything after the header (index 0)
+        while contentStack.arrangedSubviews.count > 1 {
+            let view = contentStack.arrangedSubviews.last
+            contentStack.removeArrangedSubview(view ?? UIView())
+            view?.removeFromSuperview()
         }
+
+        if habits.isEmpty {
+            contentStack.addArrangedSubview(emptyLabel)
+            contentStack.setCustomSpacing(Layout.sectionSpacing, after: emptyLabel)
+        } else {
+            for habit in habits {
+                let card = createHabitCard(for: habit)
+                contentStack.addArrangedSubview(card)
+            }
+            if let lastCard = contentStack.arrangedSubviews.last {
+                contentStack.setCustomSpacing(Layout.sectionSpacing, after: lastCard)
+            }
+        }
+
+        contentStack.addArrangedSubview(addButton)
     }
 
+    // MARK: - Card Builder
+
+    private func createHabitCard(for habit: Habit) -> UIView {
+        let card = Card()
+
+        let titleLabel = UILabel()
+        titleLabel.text = habit.title
+        titleLabel.font = .body()
+        titleLabel.textColor = .primaryText
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        let scheduleLabel = UILabel()
+        scheduleLabel.text = habit.scheduledType.rawValue.capitalized
+        scheduleLabel.font = .compact()
+        scheduleLabel.textColor = .secondaryText
+        scheduleLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        card.addSubview(titleLabel)
+        card.addSubview(scheduleLabel)
+
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: card.topAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: card.leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: card.trailingAnchor, constant: -16),
+
+            scheduleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            scheduleLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            scheduleLabel.bottomAnchor.constraint(equalTo: card.bottomAnchor, constant: -16)
+        ])
+
+        return card
+    }
+
+    // MARK: - Actions
+
+    @objc private func addHabitTapped() {
+        let addHabitVC = AddHabitViewController()
+        addHabitVC.delegate = self
+        let nav = UINavigationController(rootViewController: addHabitVC)
+        present(nav, animated: true)
+    }
+}
+
+// MARK: - AddHabitDelegate
+
+extension HomeViewController: AddHabitDelegate {
+    func addHabitViewController(_ controller: AddHabitViewController, didAdd habit: Habit) {
+        controller.dismiss(animated: true)
+        habits.append(habit)
+        reloadList()
+    }
+
+    func addHabitViewControllerDidCancel(_ controller: AddHabitViewController) {
+        controller.dismiss(animated: true)
+    }
 }
